@@ -1,0 +1,32 @@
+{
+  "name": "bb-plugin-flutter",
+  "version": "0.1.0",
+  "description": "Flutter extension for BB IDE",
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bb plugin build",
+    "test": "vitest run"
+  },
+  "bb": {
+    "name": "Flutter",
+    "description": "Flutter extension for BB IDE",
+    "branding": {
+      "icon": "Zap"
+    },
+    "server": "./server.ts",
+    "app": "./app.tsx",
+    "skills": [
+      "skills"
+    ]
+  },
+  "dependencies": {
+    "@get-bb/plugin-sdk": "^0.4.34"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
