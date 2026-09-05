@@ -64,10 +64,10 @@ export const bbProjectInfoSchema = z.object({
 export const sessionConfigSchema = z.object({
   projectPath: z.string().min(1),
   deviceId: z.string().min(1),
-  target: z.string().optional(),
-  flavor: z.string().optional(),
+  target: z.string().nullable().optional(),
+  flavor: z.string().nullable().optional(),
   mode: z.enum(["debug", "profile", "release"]),
-  additionalArgs: z.array(z.string()).optional(),
+  additionalArgs: z.array(z.string()).nullable().optional(),
 });
 
 export const sessionStatusSchema = z.enum([
@@ -132,7 +132,7 @@ export const rpcContract = defineRpcContract({
     }),
   },
   pickDirectory: {
-    input: z.object({ initialPath: z.string().optional() }).optional().nullable(),
+    input: z.object({ initialPath: z.string().nullable().optional() }).optional().nullable(),
     output: z.object({
       path: z.string().nullable(),
       canceled: z.boolean(),
@@ -240,6 +240,9 @@ export default async function plugin(bb: BbPluginApi) {
   );
 
   async function handleStartSession(sessionConfig: SessionConfig): Promise<SessionState> {
+    if (sessionConfig.target === null) sessionConfig.target = undefined;
+    if (sessionConfig.flavor === null) sessionConfig.flavor = undefined;
+    if (sessionConfig.additionalArgs === null) sessionConfig.additionalArgs = undefined;
     await ensureDeviceReady(sessionConfig.deviceId, flutterBin);
 
     // If target directory is monorepo root, auto-select subproject

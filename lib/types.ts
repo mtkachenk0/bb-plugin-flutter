@@ -5,14 +5,6 @@ export interface FlutterDevice {
   emulator: boolean;
   isSupported: boolean;
   sdk?: string;
-  capabilities?: {
-    hotReload?: boolean;
-    hotRestart?: boolean;
-    screenshot?: boolean;
-    flutterExit?: boolean;
-    hardwareRendering?: boolean;
-    startPaused?: boolean;
-  };
 }
 
 export interface FlutterEmulator {
@@ -50,10 +42,10 @@ export interface BbProjectInfo {
 export interface SessionConfig {
   projectPath: string;
   deviceId: string;
-  target?: string;
-  flavor?: string;
+  target?: string | null;
+  flavor?: string | null;
   mode: "debug" | "profile" | "release";
-  additionalArgs?: string[];
+  additionalArgs?: string[] | null;
 }
 
 export type SessionStatus =
@@ -64,13 +56,6 @@ export type SessionStatus =
   | "paused"
   | "stopped"
   | "error";
-
-export interface LogEntry {
-  id: number;
-  timestamp: number;
-  type: "stdout" | "stderr" | "system" | "progress";
-  message: string;
-}
 
 export interface SessionState {
   status: SessionStatus;
@@ -88,9 +73,9 @@ export interface SessionState {
   error: string | null;
 }
 
-export interface ServiceExtensionState {
-  debugPaint: boolean;
-  selectWidgetMode: boolean;
-  performanceOverlay: boolean;
-  slowAnimations: boolean;
+export interface LogEntry {
+  id: number;
+  timestamp: number;
+  type: "stdout" | "stderr" | "system" | "progress";
+  message: string;
 }

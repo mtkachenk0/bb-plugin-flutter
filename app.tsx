@@ -25,6 +25,16 @@ type SessionState = Awaited<
 
 type ActiveTab = "inspector" | "debugger" | "logs" | "config";
 
+function cleanRpcPayload<T extends Record<string, any>>(obj: T): T {
+  const result: any = {};
+  for (const [key, val] of Object.entries(obj)) {
+    if (val !== undefined) {
+      result[key] = val;
+    }
+  }
+  return result;
+}
+
 function cn(...classes: (string | boolean | undefined | null)[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -396,9 +406,11 @@ export function FlutterPanel() {
 
   const handlePickDirectory = async () => {
     try {
-      const res = await rpc.call("pickDirectory", {
-        initialPath: effectiveProjectPath || undefined,
-      });
+      const initialPath = effectiveProjectPath ? effectiveProjectPath.trim() : null;
+      const res = await rpc.call(
+        "pickDirectory",
+        initialPath ? { initialPath } : null
+      );
       if (res?.path) {
         await handlePathSelected(res.path);
         return;
@@ -592,14 +604,15 @@ export function FlutterPanel() {
     }
     setActionPending(true);
     try {
-      const res = await rpc.call("startSession", {
+      const payload = cleanRpcPayload({
         projectPath: projectPathToUse,
         deviceId: selectedDeviceId,
-        target: selectedTarget || undefined,
-        flavor: selectedFlavor || undefined,
         mode: selectedMode,
+        target: selectedTarget ? selectedTarget.trim() : undefined,
+        flavor: selectedFlavor ? selectedFlavor.trim() : undefined,
         additionalArgs: selectedAdditionalArgs.length > 0 ? selectedAdditionalArgs : undefined,
       });
+      const res = await rpc.call("startSession", payload);
       setSessionState(res);
       setActiveTab("logs");
       notify("Flutter build initiated.");

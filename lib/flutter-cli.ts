@@ -384,7 +384,7 @@ export function inferTargetForFlavor(flavor: string, project: FlutterProject): s
 }
 
 export async function pickDirectoryDialog(
-  initialPath?: string,
+  initialPath?: string | null,
 ): Promise<{ path: string | null; canceled: boolean }> {
   if (process.platform === "darwin") {
     try {
